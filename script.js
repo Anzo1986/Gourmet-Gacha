@@ -649,7 +649,7 @@ window.fillDay = (dateStr) => {
     openModal('slotModal');
 };
 
-// Make global for manual trigger
+// Make global for background fix
 window.fixBrokenImages = function () {
     let changed = false;
     appData.recipes.forEach(r => {
@@ -663,9 +663,7 @@ window.fixBrokenImages = function () {
         saveData();
         renderCookbook();
         renderWeekPlan();
-        alert("Bilder repariert!");
-    } else {
-        alert("Keine kaputten Bilder gefunden (oder schon repariert).");
+        console.log("Auto-repaired images.");
     }
 };
 
@@ -783,9 +781,6 @@ function setupEventListeners() {
 
     const backupBtn = document.getElementById('backupBtn');
     if (backupBtn) backupBtn.addEventListener('click', () => openModal('dataModal'));
-
-    const repairBtn = document.getElementById('repairImagesBtn');
-    if (repairBtn) repairBtn.addEventListener('click', window.fixBrokenImages);
 
     document.getElementById('prevWeekBtn').addEventListener('click', () => changeWeek(-1));
     document.getElementById('nextWeekBtn').addEventListener('click', () => changeWeek(1));

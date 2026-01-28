@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Gacha</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Gourmet Gacha</h1>
+            <div class="header-actions">
+                <button id="backupBtn" class="icon-btn" title="Backup/Restore">💾</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- View: Cookbook -->
+            <section id="view-cookbook" class="view active">
+                <div class="view-header">
+                    <h2>Kochbuch</h2>
+                    <button id="addRecipeBtn" class="fab">+</button>
+                </div>
+                <div id="recipe-grid" class="recipe-grid">
+                    <!-- Recipe Cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- View: Oracle -->
+            <section id="view-oracle" class="view">
+                <div class="oracle-container">
+                    <div id="oracle-display" class="oracle-display">
+                        <!-- Effects Layers -->
+                        <div class="oracle-rays hidden"></div>
+                        <div class="oracle-flash hidden"></div>
+
+                        <!-- Idle State: Mystery Crate -->
+                        <div class="oracle-placeholder">
+                            <img id="lootbox-img" src="lootbox_closed.png" alt="Lootbox" class="lootbox-asset">
+                        </div>
+
+                        <!-- Result State -->
+                        <div id="oracle-result" class="oracle-result hidden">
+                            <img id="oracle-img" src="" alt="Gericht">
+                            <div class="oracle-overlay">
+                                <h3 id="oracle-title">Gericht Name</h3>
+                                <div class="oracle-meta">
+                                    <span id="oracle-time">⏱️ 0 min</span>
+                                    <span id="oracle-tags">🏷️ Tags</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oracle-controls">
+                        <div class="filters">
+                            <label title="Schnell (<30m)">
+                                <input type="checkbox" id="filter-quick">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                </svg>
+                            </label>
+                            <label title="Vegetarisch">
+                                <input type="checkbox" id="filter-veggie">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z">
+                                    </path>
+                                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                                </svg>
+                            </label>
+                        </div>
+                        <button id="spinBtn" class="btn btn-primary btn-large">Gacha!</button>
+
+                        <div id="oracle-actions" class="oracle-actions hidden">
+                            <button id="acceptBtn" class="btn btn-success">Nehmen & Planen</button>
+                            <button id="rerollBtn" class="btn btn-secondary">Reroll</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Week Plan -->
+            <section id="view-weekplan" class="view">
+                <div class="view-header week-header">
+                    <button id="prevWeekBtn" class="btn btn-small btn-secondary">◀</button>
+                    <h2 id="weekDisplay">Diese Woche</h2>
+                    <button id="nextWeekBtn" class="btn btn-small btn-secondary">▶</button>
+                    <button id="clearWeekBtn" class="btn btn-small btn-danger">🗑️</button>
+                </div>
+                <div id="week-slots" class="week-slots">
+                    <!-- Week slots injected here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-target="view-cookbook">
+                <span class="icon">📖</span>
+                <span class="label">Kochbuch</span>
+            </button>
+            <button class="nav-item" data-target="view-oracle">
+                <span class="icon">🔮</span>
+                <span class="label">Orakel</span>
+            </button>
+            <button class="nav-item" data-target="view-weekplan">
+                <span class="icon">📅</span>
+                <span class="label">Plan</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal: Add/Edit Recipe -->
+    <div id="addRecipeModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Neues Rezept</h2>
+            <form id="addRecipeForm">
+                <input type="hidden" id="editRecipeId">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="recipeName" required placeholder="z.B. Spaghetti">
+                </div>
+                <div class="form-group">
+                    <label>Bild URL</label>
+                    <input type="url" id="recipeImage" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label>Rezept Link (Optional)</label>
+                    <input type="url" id="recipeLink" placeholder="https://chefkoch.de/...">
+                </div>
+                <div class="form-group">
+                    <label>Dauer (Min)</label>
+                    <input type="number" id="recipeTime" placeholder="20" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategorie (Kommagetrennt)</label>
+                    <input type="text" id="recipeTags" placeholder="Pasta, Veggie">
+                </div>
+                <div class="form-group">
+                    <label>Bewertung (1-5)</label>
+                    <div class="rating-input">
+                        <input type="range" id="recipeRating" min="1" max="5" value="3"
+                            oninput="this.nextElementSibling.value = this.value">
+                        <output>3</output> ⭐
+                    </div>
+                </div>
+                <div class="form-actions"
+                    style="display:flex; justify-content:space-between; gap:10px; margin-top:20px;">
+                    <button type="button" id="deleteRecipeBtn" class="btn btn-danger hidden">Löschen</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Slot Selection -->
+    <div id="slotModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="slotModalTitle">Tag planen</h2>
+            <div class="slot-actions">
+                <button id="slotOracleBtn" class="btn btn-primary btn-large">🔮 Orakel fragen</button>
+                <h3>Oder manuell wählen:</h3>
+                <input type="text" id="recipeSearch" placeholder="Suche..."
+                    style="width:100%; padding:8px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#222; color:white;">
+                <div id="slotRecipeList" class="slot-recipe-list">
+                    <!-- List items injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Day Selection (Target for Oracle) -->
+    <div id="daySelectionModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Wähle einen Tag</h2>
+            <p>Für welches Gericht soll die Woche geplant werden?</p>
+            <div id="daySelectionList" class="week-slots">
+                <!-- Will be injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Data Management -->
+    <div id="dataModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Datenverwaltung</h2>
+            <p>Sichere deine Rezepte, bevor der Browser-Cache geleert wird!</p>
+            <div class="data-actions">
+                <button id="exportDataBtn" class="btn btn-secondary">⬇️ Export Backup (.json)</button>
+                <div class="import-section">
+                    <label class="btn btn-secondary">
+                        ⬆️ Import Backup
+                        <input type="file" id="importDataInput" accept=".json" style="display: none;">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,786 @@
+:root {
+    --bg-color: #1a1a1a;
+    --card-bg: #333333;
+    --text-color: #ffffff;
+    --text-muted: #aaaaaa;
+    --primary-color: #ff6347;
+    /* Tomato Red */
+    --accent-color: #4caf50;
+    /* Fresh Green */
+    --nav-bg: #222222;
+    --modal-bg: rgba(0, 0, 0, 0.8);
+    --border-radius: 12px;
+    --spacing-md: 16px;
+    --spacing-sm: 8px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #000;
+    /* Darker background for letterboxing effect on desktop */
+    color: var(--text-color);
+    height: 100vh;
+    height: 100dvh;
+    /* Dynamic viewport height for mobile */
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    /* Prevent body scroll, handle in main */
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 600px;
+    background-color: #252525;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.app-header {
+    flex-shrink: 0;
+    /* Prevent header squishing */
+    padding: var(--spacing-md);
+    background-color: var(--nav-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    z-index: 10;
+}
+
+.app-header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Main Content */
+main {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--spacing-md);
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+    scrollbar-gutter: stable;
+    /* Prevents jumping when scrollbar appears/disappears */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+}
+
+.view {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+    display: block;
+}
+
+.view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.week-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.week-header h2 {
+    font-size: 1rem;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #555;
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.2rem;
+    margin: var(--spacing-md) 0;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.fab {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 24px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #222;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+/* Recipe Grid */
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.recipe-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.recipe-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.recipe-card-content {
+    padding: 10px;
+}
+
+.recipe-card h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recipe-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Oracle Redesign */
+.oracle-container {
+    text-align: center;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.oracle-display {
+    background: #151515;
+    /* Darker to blend with image bg */
+    border: 2px solid #333;
+    border-radius: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    padding: 20px;
+    min-height: 400px;
+    /* Prevent collapse */
+}
+
+.oracle-display.spinning {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+.oracle-display.winner {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 30px var(--accent-color);
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 20px var(--accent-color);
+    }
+
+    50% {
+        box-shadow: 0 0 40px var(--accent-color);
+    }
+
+    100% {
+        box-shadow: 0 0 20px var(--accent-color);
+    }
+}
+
+.oracle-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Lootbox Image Size */
+.lootbox-asset {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+    transition: transform 0.1s;
+}
+
+.oracle-result {
+    position: relative;
+    /* Was absolute, now relative to respect parent padding */
+    width: 100%;
+    flex: 1;
+    /* Fill vertical space */
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    border-radius: 16px;
+    /* Rounded corners for the card */
+    overflow: hidden;
+    /* Clip image */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    /* Pop out */
+}
+
+.oracle-result img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    opacity: 0.8;
+    /* Slight transparency for tech feel? Or full opacity? Let's go full opacity for food visibility, maybe 0.9 */
+    opacity: 1;
+    transition: filter 0.1s;
+}
+
+.oracle-result.blur img {
+    filter: blur(8px) brightness(0.8);
+}
+
+.oracle-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
+    padding: 20px;
+    z-index: 1;
+    text-align: left;
+    transform: translateY(0);
+    transition: transform 0.3s;
+}
+
+/* Hide text when spinning fast */
+.oracle-result.blur .oracle-overlay {
+    transform: translateY(100%);
+}
+
+.oracle-result h3 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    background: -webkit-linear-gradient(45deg, #fff, #ddd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.oracle-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.oracle-controls {
+    background: rgba(42, 42, 42, 0.9);
+    padding: 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.filters label {
+    background: #2a2a2a;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid #444;
+    transition: all 0.2s;
+}
+
+.filters label svg {
+    stroke: #666;
+    transition: stroke 0.2s;
+}
+
+.filters label:has(input:checked) {
+    background: #333;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(255, 99, 71, 0.2);
+}
+
+.filters label:has(input:checked) svg {
+    stroke: var(--primary-color);
+}
+
+/* Gacha Button */
+#spinBtn {
+    background: linear-gradient(45deg, var(--primary-color), #ff9966);
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.4);
+    border: none;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+#spinBtn:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(255, 99, 71, 0.4);
+}
+
+#spinBtn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: 0.5s;
+}
+
+#spinBtn:hover::after {
+    left: 100%;
+}
+
+.oracle-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Week Plan */
+.week-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.day-slot {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.day-slot.past {
+    opacity: 0.5;
+}
+
+.day-name {
+    font-weight: 700;
+    width: 40px;
+    color: var(--primary-color);
+}
+
+.day-meal {
+    flex: 1;
+    margin: 0 12px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.day-meal.filled {
+    color: var(--text-color);
+    font-style: normal;
+}
+
+/* Nav */
+.bottom-nav {
+    display: flex;
+    background-color: var(--nav-bg);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    border-top: 1px solid #444;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+}
+
+.nav-item .icon {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.nav-item .label {
+    font-size: 0.75rem;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+
+.data-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Additions for Rating and Slot Modal to style.css */
+
+.rating-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rating-input input[type=range] {
+    flex: 1;
+}
+
+.slot-recipe-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #222;
+}
+
+.slot-recipe-item {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.slot-recipe-item:hover {
+    background-color: #333;
+}
+
+.slot-recipe-item:last-child {
+    border-bottom: none;
+}
+
+/* Lootbox Effects */
+
+.lootbox-asset {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+    transition: transform 0.1s;
+}
+
+.oracle-display.shaking .lootbox-asset {
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) infinite;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-2px, 0, 0) rotate(-1deg);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(4px, 0, 0) rotate(2deg);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-8px, 0, 0) rotate(-4deg);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(8px, 0, 0) rotate(4deg);
+    }
+}
+
+/* Flash Effect */
+.oracle-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.oracle-flash.active {
+    animation: flashAnim 0.5s ease-out forwards;
+}
+
+@keyframes flashAnim {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Sunburst / God Rays */
+.oracle-rays {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: repeating-conic-gradient(from 0deg,
+            rgba(255, 255, 255, 0.1) 0deg 20deg,
+            transparent 20deg 40deg);
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.oracle-display.rarity-legendary .oracle-rays {
+    background: repeating-conic-gradient(from 0deg,
+            rgba(255, 215, 0, 0.3) 0deg 20deg,
+            transparent 20deg 40deg);
+    animation: rotateRays 10s linear infinite;
+    opacity: 1;
+}
+
+.oracle-display.rarity-epic .oracle-rays {
+    background: repeating-conic-gradient(from 0deg,
+            rgba(186, 85, 211, 0.3) 0deg 20deg,
+            transparent 20deg 40deg);
+    animation: rotateRays 10s linear infinite;
+    opacity: 1;
+}
+
+@keyframes rotateRays {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Rarity Styles for Result */
+.oracle-display.rarity-legendary {
+    border: 4px solid gold;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+}
+
+.oracle-display.rarity-epic {
+    border: 4px solid #ba55d3;
+    /* MediumOrchid */
+    box-shadow: 0 0 50px rgba(186, 85, 211, 0.6);
+}
+
+.oracle-display.rarity-rare {
+    border: 4px solid #00bfff;
+    /* DeepSkyBlue */
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+}
+
+.oracle-display.rarity-common {
+    border: 4px solid #aaa;
+    box-shadow: 0 0 20px rgba(170, 170, 170, 0.3);
+}
+
+/* Reveal Animation */
+.oracle-result.reveal {
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

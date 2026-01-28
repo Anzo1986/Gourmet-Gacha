@@ -9,7 +9,7 @@ const defaultData = {
         {
             id: 'uuid-1',
             title: 'Chili con Carne',
-            image: 'https://images.unsplash.com/photo-1594610996877-33a8794c45bc?auto=format&fit=crop&w=400',
+            image: 'https://placehold.co/400x300?text=Chili',
             timeMinutes: 45,
             tags: ['Fleisch', 'Scharf'],
             rating: 5,
@@ -18,7 +18,7 @@ const defaultData = {
         {
             id: 'uuid-2',
             title: 'Pfannkuchen',
-            image: 'https://images.unsplash.com/photo-1598214886806-c87b84b7078b?auto=format&fit=crop&w=400',
+            image: 'https://placehold.co/400x300?text=Pfannkuchen',
             timeMinutes: 20,
             tags: ['Süß', 'Schnell', 'Veggie'],
             rating: 4,
@@ -27,7 +27,7 @@ const defaultData = {
         {
             id: 'uuid-3',
             title: 'Caesar Salad',
-            image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=400',
+            image: 'https://placehold.co/400x300?text=Salad',
             timeMinutes: 15,
             tags: ['Veggie', 'Schnell', 'Leicht'],
             rating: 3,
@@ -125,6 +125,13 @@ function loadData() {
             // Recipe Rating Migration
             appData.recipes.forEach(r => {
                 if (typeof r.rating === 'undefined') r.rating = 3;
+
+                // Fix broken legacy URLs
+                if (r.image.includes('unsplash.com')) {
+                    if (r.title === 'Chili con Carne') r.image = 'https://placehold.co/400x300?text=Chili';
+                    if (r.title === 'Pfannkuchen') r.image = 'https://placehold.co/400x300?text=Pfannkuchen';
+                    if (r.title === 'Caesar Salad') r.image = 'https://placehold.co/400x300?text=Salad';
+                }
             });
 
             // Weekly Plan Migration (Legacy -> Multi Week)
@@ -148,6 +155,9 @@ function loadData() {
 
             if (!appData.mealPlan) appData.mealPlan = {};
 
+            // Aggressive Image Fix
+            if (window.fixBrokenImages) window.fixBrokenImages();
+
         } catch (e) {
             console.error('Resetting data', e);
             appData = JSON.parse(JSON.stringify(defaultData));
@@ -155,6 +165,18 @@ function loadData() {
     } else {
         saveData();
     }
+}
+
+function fixBrokenImages() {
+    let changed = false;
+    appData.recipes.forEach(r => {
+        if (r.image && r.image.includes('unsplash.com')) {
+            console.log('Fixing broken image for:', r.title);
+            r.image = `https://placehold.co/400x300?text=${encodeURIComponent(r.title)}`;
+            changed = true;
+        }
+    });
+    if (changed) saveData();
 }
 
 function saveData() {
@@ -199,7 +221,7 @@ function renderCookbook() {
         const stars = '⭐'.repeat(recipe.rating || 3);
 
         card.innerHTML = `
-            <img src="${recipe.image}" alt="${recipe.title}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22 viewBox=%220 0 400 300%22><rect width=%22400%22 height=%22300%22 fill=%22%23333%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23aaa%22 font-family=%22sans-serif%22 font-size=%2224%22>No Image</text></svg>'">
+            <img src="${recipe.image}" alt="${recipe.title}" onerror="this.onerror=null;this.src='lootbox_closed.png';">
             <div class="recipe-card-content">
                 <h3>${recipe.title}</h3>
                 <div class="recipe-meta">
@@ -597,7 +619,9 @@ function renderWeekPlan() {
         slot.innerHTML = `
             <div class="day-name">${formatDate(new Date(startOfWeek.getTime() + i * 86400000))}</div>
             <div class="day-meal ${meal ? 'filled' : ''}" onclick="window.fillDay('${dateStr}')" style="cursor:pointer">
-                ${meal ? `<span>${meal.title}</span>` : '--- <br><small style="font-size:0.7em">(Tippen zum Planen)</small>'}
+                ${meal ?
+                `<img src="${meal.image}" style="width:40px;height:40px;margin-right:10px;border-radius:8px;object-fit:cover;background:#333;" onerror="this.onerror=null;this.src='lootbox_closed.png';" class="week-meal-thumb"> <span>${meal.title}</span>`
+                : '--- <br><small style="font-size:0.7em">(Tippen zum Planen)</small>'}
             </div>
             ${meal ?
                 `<button class="btn btn-small btn-danger" onclick="window.clearDay(event, '${dateStr}')">x</button>` :
@@ -623,6 +647,26 @@ window.fillDay = (dateStr) => {
     document.getElementById('slotModalTitle').textContent = `${d}.${m}. Planen`;
     renderSlotRecipeList();
     openModal('slotModal');
+};
+
+// Make global for manual trigger
+window.fixBrokenImages = function () {
+    let changed = false;
+    appData.recipes.forEach(r => {
+        // Fix any unsplash or 404 link
+        if (r.image && (r.image.includes('unsplash.com') || r.image.includes('404'))) {
+            r.image = `https://placehold.co/400x300?text=${encodeURIComponent(r.title)}`;
+            changed = true;
+        }
+    });
+    if (changed) {
+        saveData();
+        renderCookbook();
+        renderWeekPlan();
+        alert("Bilder repariert!");
+    } else {
+        alert("Keine kaputten Bilder gefunden (oder schon repariert).");
+    }
 };
 
 function clearWeek() {
@@ -739,6 +783,9 @@ function setupEventListeners() {
 
     const backupBtn = document.getElementById('backupBtn');
     if (backupBtn) backupBtn.addEventListener('click', () => openModal('dataModal'));
+
+    const repairBtn = document.getElementById('repairImagesBtn');
+    if (repairBtn) repairBtn.addEventListener('click', window.fixBrokenImages);
 
     document.getElementById('prevWeekBtn').addEventListener('click', () => changeWeek(-1));
     document.getElementById('nextWeekBtn').addEventListener('click', () => changeWeek(1));
